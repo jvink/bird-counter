@@ -9,7 +9,8 @@ io.on("connection", (socket) => {
   console.log("A client connected");
 
   socket.on("message", (msg) => {
-    console.log("message: " + msg);
+    console.log(msg);
+    console.log(new Date(msg.timestamp));
   });
 
   socket.on("disconnect", () => {
