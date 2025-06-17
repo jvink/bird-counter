@@ -8,35 +8,13 @@ export default function Player() {
         setIsOpen(!isOpen());
     }
 
-    // Fullscreen dimensions
-    const fullscreenStyle = {
-        transform: "scale(1) translate(0, 0)",
-        opacity: 1,
-        pointerEvents: "auto",
-    };
-    // Minimized dimensions
-    const minimizedStyle = {
-        transform: "scale(0.15) translate(-400px, -200px)", // Adjust as needed for your layout
-        opacity: 0.9,
-        pointerEvents: "auto",
-    };
-
     return (
         <div
-            style={`
-                position: fixed;
-                width: ${isOpen() ? "100vw" : "100px"};
-                height: ${isOpen() ? "100vh" : "70px"};
-                bottom: ${isOpen() ? "0px" : "24px"};
-                right: ${isOpen() ? "0px" : "24px"};
-                background: red;
-                border-radius: ${isOpen() ? "0px" : "12px"};
-                overflow: hidden;
-                z-index: 1000;
-                transition: width 0.4s cubic-bezier(0.4,0,0.2,1), height 0.4s cubic-bezier(0.4,0,0.2,1), border-radius 0.3s, opacity 0.3s;
-                opacity: ${isOpen() ? 1 : 0.9};
-                pointer-events: auto;
-            `}
+            class={`fixed z-50 overflow-hidden bg-red-500 transition-all duration-400 ease-in-out
+                ${isOpen() 
+                    ? 'w-screen h-screen bottom-0 right-0 rounded-none opacity-100' 
+                    : 'w-[100px] h-[70px] bottom-6 right-6 rounded-xl opacity-90'
+                }`}
         >
             <OpenPlayerButton isOpen={isOpen()} toggle={toggle} />
         </div>

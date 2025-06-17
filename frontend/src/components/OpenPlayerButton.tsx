@@ -7,22 +7,11 @@ export default function OpenPlayerButton(props: OpenPlayerButtonProps) {
     return (
         <button
             onClick={props.toggle}
-            style={`
-                    position: absolute;
-                    ${props.isOpen ? "top: 16px; right: 16px;" : "top: 8px; left: 8px;"}
-                    z-index: 1001;
-                    width: ${props.isOpen ? "40px" : "24px"};
-                    height: ${props.isOpen ? "40px" : "24px"};
-                    font-size: ${props.isOpen ? "2rem" : "2.5rem"};
-                    color: red;
-                    border: none;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    transition: all 0.2s;
-                    background: transparent;
-                `}
+            class={`absolute z-[1001] flex items-center justify-center border-none bg-transparent cursor-pointer transition-all duration-200 text-red-500
+                ${props.isOpen 
+                    ? 'top-4 right-4 w-10 h-10 text-3xl' 
+                    : 'top-2 left-2 w-6 h-6 text-4xl'
+                }`}
             aria-label={props.isOpen ? "Close" : "Open"}
         >
             {props.isOpen ? (
