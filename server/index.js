@@ -8,6 +8,10 @@ const io = new Server(server);
 io.on("connection", (socket) => {
   console.log("A client connected");
 
+  socket.on("message", (msg) => {
+    console.log("message: " + msg);
+  });
+
   socket.on("disconnect", () => {
     console.log("Client disconnected");
   });
