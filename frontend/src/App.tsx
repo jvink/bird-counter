@@ -1,6 +1,7 @@
 import type { Component } from "solid-js";
 import styles from "./App.module.css";
 import logo from "./logo.svg";
+import Player from "./components/Player";
 
 const App: Component = () => {
   return (
@@ -10,6 +11,7 @@ const App: Component = () => {
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
+        <Player />
         <a
           class={styles.link}
           href="https://github.com/solidjs/solid"
