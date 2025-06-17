@@ -98,7 +98,7 @@ export default function Player() {
 
     return (
         <div
-            class={`fixed z-50 overflow-hidden bg-red-500 transition-all duration-400 ease-in-out
+            class={`fixed z-50 overflow-hidden transition-all duration-400 ease-in-out bg-[url('https://www.robchristiaans.nl/wp-content/uploads/2019/03/MG_9209-copy-2000.jpg')] bg-cover bg-center before:content-[''] before:absolute before:inset-0 before:bg-black/50
                 ${isOpen() 
                     ? 'w-screen h-screen bottom-0 right-0 rounded-none opacity-100' 
                     : 'w-[100px] h-[70px] bottom-6 right-6 rounded-xl opacity-90'
