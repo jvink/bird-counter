@@ -25,7 +25,7 @@ db.serialize(() => {
     BEGIN
       DELETE FROM bird_counter
       WHERE timestamp < datetime('now', '-10 minutes');
-    END;
+    END;  
   `);
 
   db.run(`CREATE TRIGGER IF NOT EXISTS update_daily_stats
@@ -34,15 +34,15 @@ db.serialize(() => {
       INSERT INTO daily_bird_stats (date, morning_count, noon_count, evening_count, total_count)
       VALUES (
         date(NEW.timestamp),
-        CASE WHEN time(NEW.timestamp) BETWEEN '06:00' AND '11:59' THEN NEW.count ELSE 0 END,
-        CASE WHEN time(NEW.timestamp) BETWEEN '12:00' AND '17:59' THEN NEW.count ELSE 0 END,
-        CASE WHEN time(NEW.timestamp) BETWEEN '18:00' AND '23:59' THEN NEW.count ELSE 0 END,
+        CASE WHEN time(datetime(NEW.timestamp, '+2 hours')) BETWEEN '06:00' AND '11:59' THEN NEW.count ELSE 0 END,
+        CASE WHEN time(datetime(NEW.timestamp, '+2 hours')) BETWEEN '12:00' AND '17:59' THEN NEW.count ELSE 0 END,
+        CASE WHEN time(datetime(NEW.timestamp, '+2 hours')) BETWEEN '18:00' AND '23:59' THEN NEW.count ELSE 0 END,
         NEW.count
       )
       ON CONFLICT(date) DO UPDATE SET
-        morning_count = morning_count + CASE WHEN time(NEW.timestamp) BETWEEN '06:00' AND '11:59' THEN NEW.count ELSE 0 END,
-        noon_count = noon_count + CASE WHEN time(NEW.timestamp) BETWEEN '12:00' AND '17:59' THEN NEW.count ELSE 0 END,
-        evening_count = evening_count + CASE WHEN time(NEW.timestamp) BETWEEN '18:00' AND '23:59' THEN NEW.count ELSE 0 END,
+        morning_count = morning_count + CASE WHEN time(datetime(NEW.timestamp, '+2 hours')) BETWEEN '06:00' AND '11:59' THEN NEW.count ELSE 0 END,
+        noon_count = noon_count + CASE WHEN time(datetime(NEW.timestamp, '+2 hours')) BETWEEN '12:00' AND '17:59' THEN NEW.count ELSE 0 END,
+        evening_count = evening_count + CASE WHEN time(datetime(NEW.timestamp, '+2 hours')) BETWEEN '18:00' AND '23:59' THEN NEW.count ELSE 0 END,
         total_count = total_count + NEW.count;
     END;
   `);
