@@ -11,10 +11,12 @@ const setupBirdSocket = (io) => {
 
       io.emit("bird_update", msg);
 
-      try {
-        await birdService.addBirdDetection(count, timestamp, image);
-      } catch (err) {
-        console.error("POST error:", err);
+      if (count !== null) {
+        try {
+          await birdService.addBirdDetection(count, timestamp, image);
+        } catch (err) {
+          console.error("POST error:", err);
+        }
       }
     });
 
