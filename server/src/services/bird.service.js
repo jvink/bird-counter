@@ -1,36 +1,37 @@
 const db = require("../config/db.config");
 
 const birdService = {
+  getDailyBirds: () => {
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT 
+          morning_count as morning,
+          noon_count as noon,
+          evening_count as evening,
+          total_count as total
+        FROM daily_bird_stats
+        WHERE date = date('now')
+      `;
+
+      db.get(query, [], (err, stats) => {
+        if (err) reject(err);
+        else resolve(stats || { morning: 0, noon: 0, evening: 0, total: 0 });
+      });
+    });
+  },
+
   getRecentBirds: () => {
     return new Promise((resolve, reject) => {
       const query = `
         SELECT count, timestamp, image
         FROM bird_counter 
         ORDER BY timestamp DESC 
-        LIMIT 100
+        LIMIT 50
       `;
 
       db.all(query, [], (err, rows) => {
         if (err) reject(err);
         else resolve(rows);
-      });
-    });
-  },
-
-  getBirdStats: () => {
-    return new Promise((resolve, reject) => {
-      const query = `
-        SELECT 
-          COUNT(*) as total_records,
-          SUM(count) as total_birds,
-          AVG(count) as avg_birds,
-          MAX(count) as max_birds
-        FROM bird_counter
-      `;
-
-      db.get(query, [], (err, stats) => {
-        if (err) reject(err);
-        else resolve(stats);
       });
     });
   },
