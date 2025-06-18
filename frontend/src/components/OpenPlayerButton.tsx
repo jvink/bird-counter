@@ -7,7 +7,7 @@ export default function OpenPlayerButton(props: OpenPlayerButtonProps) {
     return (
         <button
             onClick={props.toggle}
-            class={`absolute z-[1001] flex items-center justify-center border-none bg-transparent cursor-pointer transition-all duration-200 text-red-500
+            class={`absolute z-[1001] flex items-center justify-center border-none cursor-pointer transition-all duration-200 text-red-500
                 ${props.isOpen 
                     ? 'top-4 right-4 w-10 h-10 text-3xl' 
                     : 'top-2 left-2 w-6 h-6 text-4xl'
