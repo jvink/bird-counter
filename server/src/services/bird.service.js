@@ -4,7 +4,7 @@ const birdService = {
   getRecentBirds: () => {
     return new Promise((resolve, reject) => {
       const query = `
-        SELECT count, timestamp, image, centroid_x, centroid_y 
+        SELECT count, timestamp, image
         FROM bird_counter 
         ORDER BY timestamp DESC 
         LIMIT 100
@@ -35,11 +35,11 @@ const birdService = {
     });
   },
 
-  addBirdDetection: (count, timestamp, image, centroid) => {
+  addBirdDetection: (count, timestamp, image) => {
     return new Promise((resolve, reject) => {
       db.run(
-        "INSERT INTO bird_counter (count, timestamp, image, centroid_x, centroid_y) VALUES (?, ?, ?, ?, ?)",
-        [count, timestamp, image, centroid[0], centroid[1]],
+        "INSERT INTO bird_counter (count, timestamp, image) VALUES (?, ?, ?)",
+        [count, timestamp, image],
         (err) => {
           if (err) reject(err);
           else resolve();

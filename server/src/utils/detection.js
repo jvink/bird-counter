@@ -9,7 +9,6 @@ const isDuplicate = (centroid) => {
   const timeDuplicate =
     now - new Date(lastDetection.time) < TIME_THRESHOLD * 1000;
 
-  // Handle cases where centroid values might be 0
   const centroidDuplicate =
     lastDetection.centroid &&
     Array.isArray(lastDetection.centroid) &&
