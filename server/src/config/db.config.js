@@ -19,12 +19,12 @@ db.serialize(() => {
     UNIQUE(date)
   )`);
 
-  // Run cleanup every 30 minutes on bird_counter table
+  // Run cleanup every 10 minutes on bird_counter table
   db.run(`CREATE TRIGGER IF NOT EXISTS cleanup_old_records
     AFTER INSERT ON bird_counter
     BEGIN
       DELETE FROM bird_counter
-      WHERE timestamp < datetime('now', '-30 minutes');
+      WHERE timestamp < datetime('now', '-10 minutes');
     END;
   `);
 

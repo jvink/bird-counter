@@ -1,11 +1,19 @@
 const db = require("../config/db.config");
 
+const convertToLocalTime = (timestamp) => {
+  const date = new Date(timestamp);
+  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return localDate.toISOString().slice(0, -1) + "+02:00";
+};
+
 const birdService = {
   addBirdDetection: (count, timestamp, image) => {
+    const localTimestamp = convertToLocalTime(timestamp);
+
     return new Promise((resolve, reject) => {
       db.run(
         "INSERT INTO bird_counter (count, timestamp, image) VALUES (?, ?, ?)",
-        [count, timestamp, image],
+        [count, localTimestamp, image],
         (err) => {
           if (err) reject(err);
           else resolve();
