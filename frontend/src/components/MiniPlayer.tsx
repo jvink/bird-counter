@@ -67,6 +67,11 @@ export default function MiniPlayer(props: MiniPlayerProps) {
                     <path d="M5,15h2V8.41L18.59,20L20,18.59L8.41,7H15V5H5V15z" />
                 </svg>
             </div>
+            {props.birdData && (
+                <div class="absolute top-3 right-3 border-2 border-green-500/60 rounded-full p-1 animate-pulse">
+                    <div class="w-3 h-3 bg-green-500 rounded-full" />
+                </div>
+            )}
         </div>
     );
 } 

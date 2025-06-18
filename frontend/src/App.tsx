@@ -1,20 +1,15 @@
-import { createSignal, type Component, onMount, onCleanup } from "solid-js";
+import { createSignal, type Component, onMount } from "solid-js";
 import { io } from "socket.io-client";
 import Player from "./components/Player";
 import BirdsSpotted from "./components/BirdsSpotted";
 import BirdsPerHour, { TimeFrame } from "./components/BirdsPerHour";
-import LastBirdImage from "./components/LastBirdImage";
+import LastBird from "./components/LastBird";
 
 const timeFrames: TimeFrame[] = [
   { daySection: 'morning', statusLevel: null },
   { daySection: 'afternoon', statusLevel: null },
   { daySection: 'evening', statusLevel: null },
 ];
-
-const lastBirdImage = {
-  datetime: new Date(),
-  image: 'https://www.birdspot.co.uk/wp-content/uploads/2025/04/bird-house.jpg'
-};
 
 const App: Component = () => {
   const [amountOfBirdsVisible, setAmountOfBirdsVisible] = createSignal(0);
@@ -25,6 +20,7 @@ const App: Component = () => {
     evening: number;
     total: number;
   } | null>(null);
+  const [isLoading, setIsLoading] = createSignal(true);
   const [birdData, setBirdData] = createSignal<{ count: number; timestamp: string; image: string } | null>(null);
   let socket: any;
 
@@ -34,6 +30,7 @@ const App: Component = () => {
       const data = await response.json();
       setDailyStats(data);
       setAmountOfBirds(data.total);
+      setIsLoading(false);
     } catch (error) {
       console.error('Failed to fetch daily stats:', error);
     }
@@ -96,13 +93,13 @@ const App: Component = () => {
       <p class="text-xl">Currently <span class="text-green-800 font-bold text-2xl">{amountOfBirdsVisible()}</span> birds visible</p>
       <div class="flex gap-6 items-stretch">
         <div class="flex-1 min-w-0">
-          <BirdsSpotted amountOfBirds={amountOfBirds()} />
+          <BirdsSpotted amountOfBirds={amountOfBirds()} isLoading={isLoading()} />
         </div>
         <div class="flex-1 min-w-0">
-          <BirdsPerHour timeFrames={getTimeFrames()} />
+          <BirdsPerHour timeFrames={getTimeFrames()} isLoading={isLoading()} />
         </div>
       </div>
-      <LastBirdImage {...lastBirdImage} />
+      <LastBird />
       <Player birdData={birdData()} />
     </div>
   );

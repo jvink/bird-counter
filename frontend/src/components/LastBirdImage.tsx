@@ -1,8 +1,18 @@
-export default function LastBirdImage(props: { datetime: Date; image: string }) {
+import { BirdData } from "./LastBird";
+
+interface LastBirdImageProps {
+    birdData: BirdData;
+}
+
+export default function LastBirdImage(props: LastBirdImageProps) {
+    const datetime = new Date(props.birdData!.timestamp);
+    const hours = datetime.getHours().toString().padStart(2, '0');
+    const minutes = datetime.getMinutes().toString().padStart(2, '0');
+
     return (
-        <div class="bg-white rounded-3xl h-64 md:h-[300px] relative overflow-hidden">
-            <img src={props.image} class="w-full h-full object-cover" />
-            <span class="absolute top-6 left-6 text-white font-bold text-2xl">{new Date(props.datetime).getHours()}:{new Date(props.datetime).getMinutes()}</span>
-        </div>
+        <>
+            <img src={`data:image/jpeg;base64,${props.birdData.image}`} class="w-full h-full object-cover" />
+            <span class="absolute top-6 left-6 text-white font-bold text-2xl">{hours}:{minutes}</span>
+        </>
     );
 }
