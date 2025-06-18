@@ -1,4 +1,4 @@
-import { createSignal, onMount, onCleanup, createEffect } from "solid-js";
+import { createSignal, onMount, createEffect } from "solid-js";
 
 interface LargePlayerProps {
     onClose: () => void;
@@ -11,12 +11,6 @@ export default function LargePlayer(props: LargePlayerProps) {
     let frameCount = 0;
     let lastTime = performance.now();
     const fpsUpdateInterval = 500;
-
-    const resizeCanvas = () => {
-        if (!canvasRef) return;
-        canvasRef.width = window.innerWidth * 0.8;
-        canvasRef.height = window.innerHeight * 0.8;
-    };
 
     const drawImage = (data: { count: number; timestamp: string; image: string }) => {
         if (!canvasRef) return;
@@ -32,7 +26,7 @@ export default function LargePlayer(props: LargePlayerProps) {
         }
 
         const img = new Image();
-        
+
         img.onload = () => {
             ctx.clearRect(0, 0, canvasRef!.width, canvasRef!.height);
 
@@ -49,7 +43,7 @@ export default function LargePlayer(props: LargePlayerProps) {
             const y = (canvasRef!.height - drawHeight) / 2;
 
             ctx.drawImage(img, x, y, drawWidth, drawHeight);
-            
+
             // Show text overlays
             ctx.fillStyle = 'white';
             ctx.strokeStyle = 'black';
@@ -79,25 +73,19 @@ export default function LargePlayer(props: LargePlayerProps) {
     });
 
     onMount(() => {
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-    });
-
-    onCleanup(() => {
-        window.removeEventListener('resize', resizeCanvas);
+        if (canvasRef) {
+            canvasRef.width = window.innerWidth;
+            canvasRef.height = window.innerHeight;
+        }
     });
 
     return (
-        <div class="fixed z-50 w-screen h-screen bottom-0 right-0 bg-black/50">
+        <div class="fixed inset-0 bg-black z-50 flex items-center justify-center">
             <button
                 onClick={props.onClose}
-                class="absolute z-[1001] top-4 right-4 w-10 h-10 text-3xl flex items-center justify-center border-none cursor-pointer transition-all duration-200 text-red-500"
-                aria-label="Close"
+                class="absolute cursor-pointer top-4 right-4 z-10 bg-black/30 text-white font-bold p-3 rounded-full text-lg"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 0 24 24" width="32px" fill="#e3e3e3">
-                    <path d="M0 0h24v24H0z" fill="none" />
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#ffffff"><path d="M0 0h24v24H0z" fill="none" /><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" /></svg>
             </button>
             <canvas
                 ref={canvasRef}
