@@ -11,7 +11,7 @@ const setupBirdSocket = (io) => {
 
       io.emit("bird_update", msg);
 
-      if (count !== null) {
+      if (count !== null && count > 0) {
         try {
           await birdService.addBirdDetection(count, timestamp, image);
         } catch (err) {
