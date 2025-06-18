@@ -1,4 +1,5 @@
-import { createSignal, type Component, onMount } from "solid-js";
+import { createSignal, type Component, onMount, onCleanup } from "solid-js";
+import { io } from "socket.io-client";
 import Player from "./components/Player";
 import BirdsSpotted from "./components/BirdsSpotted";
 import BirdsPerHour, { TimeFrame } from "./components/BirdsPerHour";
@@ -16,7 +17,7 @@ const lastBirdImage = {
 };
 
 const App: Component = () => {
-  const [amountOfBirdsVisible, setAmountOfBirdsVisible] = createSignal(2);
+  const [amountOfBirdsVisible, setAmountOfBirdsVisible] = createSignal(0);
   const [amountOfBirds, setAmountOfBirds] = createSignal(0);
   const [dailyStats, setDailyStats] = createSignal<{
     morning: number;
@@ -24,6 +25,8 @@ const App: Component = () => {
     evening: number;
     total: number;
   } | null>(null);
+  const [birdData, setBirdData] = createSignal<{ count: number; timestamp: string; image: string } | null>(null);
+  let socket: any;
 
   const fetchDailyStats = async () => {
     try {
@@ -39,7 +42,25 @@ const App: Component = () => {
   onMount(() => {
     fetchDailyStats();
     const interval = setInterval(fetchDailyStats, 30000);
-    return () => clearInterval(interval);
+
+    // Socket connection for live bird updates
+    socket = io("http://192.168.178.135:3000");
+    
+    socket.on('connect', () => {
+      console.log('App connected to server');
+    });
+
+    socket.on('bird_update', (data: { count: number; timestamp: string; image: string }) => {
+      setBirdData(data);
+      setAmountOfBirdsVisible(data.count);
+    });
+
+    return () => {
+      clearInterval(interval);
+      if (socket) {
+        socket.disconnect();
+      }
+    };
   });
 
   const getStatusLevel = (amount: number | null): 0 | 1 | 2 | null => {
@@ -72,7 +93,7 @@ const App: Component = () => {
   return (
     <div class="flex flex-col gap-6 p-6 bg-[#e7e7e7] min-h-screen">
       <h1 class="text-4xl font-bold">Bird Box</h1>
-      {amountOfBirdsVisible() > 0 && <p class="text-xl">Currently <span class="text-green-800 font-bold text-2xl">{amountOfBirdsVisible()}</span> birds visible</p>}
+      <p class="text-xl">Currently <span class="text-green-800 font-bold text-2xl">{amountOfBirdsVisible()}</span> birds visible</p>
       <div class="flex gap-6 items-stretch">
         <div class="flex-1 min-w-0">
           <BirdsSpotted amountOfBirds={amountOfBirds()} />
@@ -82,7 +103,7 @@ const App: Component = () => {
         </div>
       </div>
       <LastBirdImage {...lastBirdImage} />
-      <Player />
+      <Player birdData={birdData()} />
     </div>
   );
 };
